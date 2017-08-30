@@ -220,7 +220,7 @@ declare namespace ymaps {
 
 			destroy(): void;
 
-			getData(): object | any;
+			getData(): object | null;
 
 			getOptions(): IOptionManager | null;
 
@@ -661,16 +661,15 @@ declare namespace ymaps {
 
 			add(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-			getParent(): IEventManager | any;
+			getParent(): IEventManager | null;
 
 			group(): IEventGroup;
 
 			remove(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-			setParent(parent: IEventManager | any): this;
+			setParent(parent: IEventManager | null): this;
 
 			fire(type: string, eventobject: object | IEvent): this;
-
 		}
 	}
 
@@ -705,7 +704,7 @@ declare namespace ymaps {
 
 				events: IEventManager;
 
-				getBounds(): number[][] | any;
+				getBounds(): number[][] | null;
 
 				getType(): string;
 
@@ -739,11 +738,11 @@ declare namespace ymaps {
 
 				add(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-				getParent(): object | any;
+				getParent(): object | null;
 
 				group(): IEventGroup;
 
-				setParent(parent: IEventManager | any): this;
+				setParent(parent: IEventManager | null): this;
 
 				fire(type: string, eventobject: object | IEvent): this;
 			}
@@ -770,9 +769,9 @@ declare namespace ymaps {
 				simplification?: boolean;
 			});
 
-			static fromEncodedCoordinates(encodedCoordinates: string): geometry.LineString; //tslint:disable-line function-name
+			static fromEncodedCoordinates(encodedCoordinates: string): LineString; //tslint:disable-line function-name
 
-			static toEncodedCoordinates(geometry: geometry.LineString): string; //tslint:disable-line function-name
+			static toEncodedCoordinates(geometry: LineString): string; //tslint:disable-line function-name
 
 			events: IEventManager;
 			options: IOptionManager;
@@ -783,7 +782,7 @@ declare namespace ymaps {
 
 			setMap(map: Map): void;
 
-			getBounds(): number[][] | any;
+			getBounds(): number[][] | null;
 
 			getType(): string;
 
@@ -817,11 +816,11 @@ declare namespace ymaps {
 
 			add(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-			getParent(): object | any;
+			getParent(): object | null;
 
 			group(): IEventGroup;
 
-			setParent(parent: IEventManager | any): this;
+			setParent(parent: IEventManager | null): this;
 
 			fire(type: string, eventobject: object | IEvent): this;
 		}
@@ -832,7 +831,7 @@ declare namespace ymaps {
 			options: IOptionManager;
 			events: IEventManager;
 
-			getMap(): Map | any;
+			getMap(): Map | null;
 
 			getPixelGeometry(options?: object): IPixelGeometry;
 
@@ -1040,7 +1039,6 @@ declare namespace ymaps {
 				remove(object: object): this;
 
 				getMap(): Map;
-
 			}
 		}
 
@@ -1208,15 +1206,15 @@ declare namespace ymaps {
 
 			destroy(): void;
 
-			getData(): object | any;
+			getData(): object | null;
 
-			getOptions(): IOptionManager | any;
+			getOptions(): IOptionManager | null;
 
-			getOverlay(): Promise<IOverlay | any>;
+			getOverlay(): Promise<IOverlay | null>;
 
-			getOverlaySync(): IOverlay | any;
+			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | any;
+			getPosition(): number[] | null;
 
 			isOpen(): boolean;
 
@@ -1232,7 +1230,7 @@ declare namespace ymaps {
 		export class ZoomRange implements IEventEmitter {
 			constructor(map: Map, constraints: number[]);
 
-			events: ymaps.IEventManager;
+			events: IEventManager;
 
 			get(coords?: number[]): Promise<number[]>;
 
@@ -1264,7 +1262,7 @@ declare namespace ymaps {
 			}
 
 			export class PathModel implements IEventEmitter {
-				events: ymaps.IEventManager;
+				events: IEventManager;
 				properties: data.Manager;
 				route: RouteModel;
 
@@ -1369,7 +1367,7 @@ declare namespace ymaps {
 			}
 
 			export class PathModel implements IEventEmitter {
-				events: ymaps.IEventManager;
+				events: IEventManager;
 				properties: data.Manager;
 				route: RouteModel;
 
@@ -1580,7 +1578,7 @@ declare namespace ymaps {
 		export class MultiRouteModel implements IEventEmitter {
 			constructor(referencePoints: IMultiRouteReferencePoint[], params?: IMultiRouteParams);
 
-			events: ymaps.IEventManager;
+			events: IEventManager;
 			properties: data.Manager;
 
 			destroy(): void;
@@ -1721,13 +1719,12 @@ declare namespace ymaps {
 			remove(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
 			fire(type: string, eventobject: object | IEvent): this;
-
 		}
 	}
 
 	export namespace panorama {
 		export class Manager implements IEventEmitter {
-			events: ymaps.IEventManager;
+			events: IEventManager;
 
 			closePlayer(): void;
 
@@ -1804,7 +1801,7 @@ declare namespace ymaps {
 			state: IDataManager;
 			events: IEventManager;
 			options: IOptionManager;
-			editor: router.Editor;
+			editor: Editor;
 
 			getOverlay(): Promise<IOverlay | null>;
 
@@ -1833,7 +1830,6 @@ declare namespace ymaps {
 			getViaPoints(): GeoObjectCollection;
 
 			getWayPoints(): GeoObjectCollection;
-
 		}
 	}
 
@@ -1907,7 +1903,7 @@ declare namespace ymaps {
 
 		getOverlaySync(): IOverlay | null;
 
-		getParent(): any | IControlParent;
+		getParent(): null | IControlParent;
 
 		setParent(parent: IControlParent): this;
 
@@ -1994,13 +1990,9 @@ declare namespace ymaps {
 
 		getOverlaySync(): IOverlay | null;
 
-		getParent(): any | IControlParent;
+		getParent(): null | IControlParent;
 
-		getParent(): any | IControlParent;
-
-		setParent(parent: IControlParent): this;
-
-		setParent(parent: IControlParent): this;
+		setParent(parent: IControlParent | null): this;
 
 		getMap(): Map;
 
@@ -2088,7 +2080,7 @@ declare namespace ymaps {
 
 		get(name: string): object;
 
-		getSourceEvent(): IEvent | any;
+		getSourceEvent(): IEvent | null;
 
 		isDefaultPrevented(): boolean;
 
@@ -2117,13 +2109,13 @@ declare namespace ymaps {
 		properties: data.Manager;
 		state: data.Manager;
 
-		getOverlay(): Promise<IOverlay | any>;
+		getOverlay(): Promise<IOverlay | null>;
 
-		getOverlaySync(): IOverlay | any;
+		getOverlaySync(): IOverlay | null;
 
-		getParent(): any | IControlParent;
+		getParent(): null | IControlParent;
 
-		setParent(parent: IControlParent): this;
+		setParent(parent: IControlParent | null): this;
 
 		getMap(): Map;
 	}
@@ -2693,7 +2685,6 @@ declare namespace ymaps {
 		getCopyrights?(coords: number[], zoom: number): Promise<(string | HTMLElement)[]>;
 
 		getZoomRange?(point: number[]): Promise<number[]>;
-
 	}
 
 	export interface ILayout extends IDomEventEmitter {
