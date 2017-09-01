@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"build": "typings bundle --out build/index.d.ts -G",
+		"build": "echo \"Error: no build specified\" && exit 1",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {
@@ -15,9 +15,5 @@
 	"bugs": {
 		"url": "https://github.com/Delagen/typings-yandex-maps/issues"
 	},
-	"homepage": "https://github.com/Delagen/typings-yandex-maps#readme",
-	"typings": "index.d.ts",
-	"devDependencies": {
-		"typings": "~2.1.1"
-	}
+	"homepage": "https://github.com/Delagen/typings-yandex-maps#readme"
 }

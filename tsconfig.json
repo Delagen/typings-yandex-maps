@@ -1,0 +1,14 @@
+{
+	"include": [
+		"index.d.ts"
+	],
+	"compilerOptions": {
+		"lib": [
+			"es6",
+			"dom"
+		],
+		"declaration": true,
+		"outDir": "build",
+		"noEmit": true
+	}
+}

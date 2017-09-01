@@ -4,6 +4,12 @@ declare namespace ymaps {
 		new (): T;
 	}
 
+	export type Coordinate = [number, number];
+	export type CoordinateBounds = [Coordinate, Coordinate];
+	export type ValueTuple<T> = [T, T, T, T];
+	export type ValuePair<T> = [T, T];
+	export type ValueBounds<T> = ValueTuple<T> | ValuePair<T> | T;
+
 	type ControlSingleKey = "fullscreenControl" | "geolocationControl" | "routeEditor" | "rulerControl" | "searchControl" | "trafficControl" | "typeSelector" | "zoomControl";
 	type ControlSetKey = "smallMapDefaultSet" | "mediumMapDefaultSet" | "largeMapDefaultSet" | "default";
 	type ControlKey = ControlSingleKey | ControlSetKey;
@@ -18,8 +24,6 @@ declare namespace ymaps {
 	type InteractivityModelKey = "default#opaque" | "default#geoObject" | "default#layer" | "default#transparent" | "default#silent" | string;
 
 	type PresetKey = string; //option.presetStorage
-	//[number, number]
-	//[[number, number], [number, number]]
 
 	export namespace behavior {
 		export class DblClickZoom implements IBehavior {
@@ -228,17 +232,17 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<Clusterer>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<Clusterer>;
 
 			setData(data: object | string | HTMLElement): Promise<Clusterer>;
 
 			setOptions(options: object): Promise<Clusterer>;
 
-			setPosition(position: number[]): Promise<Clusterer>;
+			setPosition(position: Coordinate): Promise<Clusterer>;
 		}
 
 		export class Hint implements IHintManager<Clusterer> {
@@ -258,17 +262,17 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<Clusterer>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<Clusterer>;
 
 			setData(data: object | string | HTMLElement): Promise<Clusterer>;
 
 			setOptions(options: object): Promise<Clusterer>;
 
-			setPosition(position: number[]): Promise<Clusterer>;
+			setPosition(position: Coordinate): Promise<Clusterer>;
 		}
 	}
 
@@ -322,7 +326,7 @@ declare namespace ymaps {
 			float?: "none" | "left" | "right";
 			floatIndex?: number;
 			layout?: IClassConstructor<ISelectableControlLayout> | string;
-			maxWidth?: number[][] | number[] | number;
+			maxWidth?: ValueBounds<number>;
 			position?: {
 				bottom?: number | string;
 				left?: number | string;
@@ -600,14 +604,14 @@ declare namespace ymaps {
 			data?: {};
 			options?: {
 				adjustMapMargin?: boolean;
-				boundedBy?: number[][];
+				boundedBy?: ValueBounds<number>;
 				fitMaxWidth?: boolean;
 				float?: "none" | "left" | "right";
 				floatIndex?: number;
 				formLayout?: string | IClassConstructor<ILayout>;
 				kind?: "house" | "street" | "metro" | "district" | "locality";
 				layout?: string | IClassConstructor<ISearchControlLayout>;
-				maxWidth?: number[][] | number[] | number;
+				maxWidth?: ValueBounds<number>;
 				noCentering?: boolean;
 				noPlacemark?: boolean;
 				noPopup?: boolean;
@@ -704,31 +708,31 @@ declare namespace ymaps {
 
 				events: IEventManager;
 
-				getBounds(): number[][] | null;
+				getBounds(): CoordinateBounds | null;
 
 				getType(): string;
 
-				get(index: number): number[];
+				get(index: number): Coordinate;
 
 				getChildGeometry(index: number): IPointGeometryAccess;
 
-				getClosest(anchorPosition: number[]): object;
+				getClosest(anchorPosition: Coordinate): object;
 
-				getCoordinates(): number[][];
+				getCoordinates(): Coordinate[];
 
 				getLength(): number;
 
-				insert(index: number, coordinates: number[][]): ILineStringGeometryAccess;
+				insert(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-				remove(index: number): number[];
+				remove(index: number): Coordinate;
 
 				remove(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-				set(index: number, coordinates: number[]): ILineStringGeometryAccess;
+				set(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-				setCoordinates(coordinates: number[]): ILineStringGeometryAccess;
+				setCoordinates(coordinates: Coordinate[]): ILineStringGeometryAccess;
 
-				splice(index: number, length: number): number[][];
+				splice(index: number, length: number): Coordinate[];
 
 				freeze(): IFreezable;
 
@@ -750,18 +754,18 @@ declare namespace ymaps {
 			export class Point implements IBasePointGeometry { //tslint:disable-line no-shadowed-variable
 				events: IEventManager;
 
-				getBounds(): number[][] | null;
+				getBounds(): CoordinateBounds | null;
 
 				getType(): string;
 
-				getCoordinates(): number[] | null;
+				getCoordinates(): Coordinate | null;
 
-				setCoordinates(coordinates: number[] | null): this;
+				setCoordinates(coordinates: Coordinate | null): this;
 			}
 		}
 
 		export class LineString implements ILineStringGeometry {
-			constructor(coordinates?: number[][], options?: {
+			constructor(coordinates?: Coordinate[], options?: {
 				coordRendering?: "shortestPath" | "straightPath";
 				geodesic?: boolean;
 				pixelRendering?: "jumpy" | "static";
@@ -782,31 +786,31 @@ declare namespace ymaps {
 
 			setMap(map: Map): void;
 
-			getBounds(): number[][] | null;
+			getBounds(): CoordinateBounds | null;
 
 			getType(): string;
 
-			get(index: number): number[];
+			get(index: number): Coordinate;
 
 			getChildGeometry(index: number): IPointGeometryAccess;
 
-			getClosest(anchorPosition: number[]): object;
+			getClosest(anchorPosition: Coordinate): object;
 
-			getCoordinates(): number[][];
+			getCoordinates(): Coordinate[];
 
 			getLength(): number;
 
-			insert(index: number, coordinates: number[][]): ILineStringGeometryAccess;
+			insert(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-			remove(index: number): number[];
+			remove(index: number): Coordinate;
 
 			remove(types: string[][] | string[] | string, callback: (event: (object | IEvent)) => void, context?: object, priority?: number): this;
 
-			set(index: number, coordinates: number[]): ILineStringGeometryAccess;
+			set(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-			setCoordinates(coordinates: number[]): ILineStringGeometryAccess;
+			setCoordinates(coordinates: Coordinate[]): ILineStringGeometryAccess;
 
-			splice(index: number, length: number): number[][];
+			splice(index: number, length: number): Coordinate[];
 
 			freeze(): IFreezable;
 
@@ -826,7 +830,7 @@ declare namespace ymaps {
 		}
 
 		export class Point implements IPointGeometry {
-			constructor(coordinates?: number[] | null);
+			constructor(coordinates?: Coordinate | null);
 
 			options: IOptionManager;
 			events: IEventManager;
@@ -837,13 +841,13 @@ declare namespace ymaps {
 
 			setMap(map: Map): void;
 
-			getBounds(): number[][] | null;
+			getBounds(): CoordinateBounds | null;
 
 			getType(): string;
 
-			getCoordinates(): number[] | null;
+			getCoordinates(): Coordinate | null;
 
-			setCoordinates(coordinates: number[] | null): this;
+			setCoordinates(coordinates: Coordinate | null): this;
 		}
 	}
 
@@ -867,17 +871,17 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<GeoObject>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<GeoObject>;
 
 			setData(data: object | string | HTMLElement): Promise<GeoObject>;
 
 			setOptions(options: object): Promise<GeoObject>;
 
-			setPosition(position: number[]): Promise<GeoObject>;
+			setPosition(position: Coordinate): Promise<GeoObject>;
 		}
 
 		export class Hint implements IHintManager<GeoObject> {
@@ -897,17 +901,17 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<GeoObject>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<GeoObject>;
 
 			setData(data: object | string | HTMLElement): Promise<GeoObject>;
 
 			setOptions(options: object): Promise<GeoObject>;
 
-			setPosition(position: number[]): Promise<GeoObject>;
+			setPosition(position: Coordinate): Promise<GeoObject>;
 		}
 
 		export class Sequence implements IGeoObject, IGeoObjectSequence {
@@ -933,13 +937,13 @@ declare namespace ymaps {
 
 			get(index: number): IGeoObject;
 
-			getBounds(): number[][] | null;
+			getBounds(): CoordinateBounds | null;
 
 			getIterator(): IIterator;
 
 			getLength(): number;
 
-			getPixelBounds(): number[][] | null;
+			getPixelBounds(): CoordinateBounds | null;
 
 			indexOf(geoObject: IGeoObject): number;
 		}
@@ -1060,11 +1064,11 @@ declare namespace ymaps {
 
 				destroy(): this;
 
-				getMargin(): number[];
+				getMargin(): ValueTuple<number>;
 
-				getOffset(): number[];
+				getOffset(): ValueTuple<number>;
 
-				setDefaultMargin(margin: number[][] | number[] | number): void;
+				setDefaultMargin(margin: ValueBounds<number>): void;
 			}
 		}
 
@@ -1107,17 +1111,17 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<Balloon>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<Balloon>;
 
 			setData(data: object | string | HTMLElement): Promise<Balloon>;
 
 			setOptions(options: object): Promise<Balloon>;
 
-			setPosition(position: number[]): Promise<Balloon>;
+			setPosition(position: Coordinate): Promise<Balloon>;
 		}
 
 		export class Container implements IDomEventEmitter {
@@ -1133,11 +1137,11 @@ declare namespace ymaps {
 
 			getElement(): HTMLElement;
 
-			getOffset(): number[];
+			getOffset(): ValueTuple<number>;
 
 			getParentElement(): HTMLElement;
 
-			getSize(): number[];
+			getSize(): ValuePair<number>;
 
 			isFullscreen(): boolean;
 		}
@@ -1145,9 +1149,9 @@ declare namespace ymaps {
 		export class Converter {
 			constructor(map: Map);
 
-			globalToPage(globalPixelPoint: number[]): number[];
+			globalToPage(globalPixelPoint: Coordinate): Coordinate;
 
-			pageToGlobal(pagePixelPoint: number[]): number[];
+			pageToGlobal(pagePixelPoint: Coordinate): Coordinate;
 		}
 
 		export class Copyrights {
@@ -1157,7 +1161,7 @@ declare namespace ymaps {
 
 			addProvider(provider: ICopyrightsProvider): this;
 
-			get(point?: number[], zoom?: number): Promise<(string | HTMLElement)[]>;
+			get(point?: Coordinate, zoom?: number): Promise<(string | HTMLElement)[]>;
 
 			getPromoLink(): string;
 
@@ -1176,13 +1180,13 @@ declare namespace ymaps {
 
 			get(index: number): IGeoObject;
 
-			getBounds(): number[][] | null;
+			getBounds(): CoordinateBounds | null;
 
 			getIterator(): IIterator;
 
 			getLength(): number;
 
-			getPixelBounds(): number[][] | null;
+			getPixelBounds(): CoordinateBounds | null;
 
 			indexOf(object: IGeoObject): number;
 
@@ -1214,27 +1218,27 @@ declare namespace ymaps {
 
 			getOverlaySync(): IOverlay | null;
 
-			getPosition(): number[] | null;
+			getPosition(): Coordinate | null;
 
 			isOpen(): boolean;
 
-			open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<Hint>;
+			open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<Hint>;
 
 			setData(data: object | string | HTMLElement): Promise<Hint>;
 
 			setOptions(options: object): Promise<Hint>;
 
-			setPosition(position: number[]): Promise<Hint>;
+			setPosition(position: Coordinate): Promise<Hint>;
 		}
 
 		export class ZoomRange implements IEventEmitter {
-			constructor(map: Map, constraints: number[]);
+			constructor(map: Map, constraints: ValuePair<number>);
 
 			events: IEventManager;
 
-			get(coords?: number[]): Promise<number[]>;
+			get(coords?: Coordinate): Promise<ValuePair<number>>;
 
-			getCurrent(): number[];
+			getCurrent(): ValuePair<number>;
 		}
 	}
 
@@ -1538,7 +1542,7 @@ declare namespace ymaps {
 				dragUpdateInterval?: string | number;
 				preventDragUpdate?: boolean;
 				useMapMargin?: boolean;
-				zoomMargin?: number[][] | number[] | number;
+				zoomMargin?: ValueBounds<number>;
 				[index: string]: any;
 			});
 
@@ -1562,9 +1566,9 @@ declare namespace ymaps {
 
 			getActiveRoute(): driving.Route | masstransit.Route | null;
 
-			getBounds(): number[][] | null;
+			getBounds(): CoordinateBounds | null;
 
-			getPixelBounds(): number[][] | null;
+			getPixelBounds(): CoordinateBounds | null;
 
 			getRoutes(): GeoObjectCollection;
 
@@ -1865,7 +1869,7 @@ declare namespace ymaps {
 		autoPan?: boolean;
 		autoPanCheckZoomRange?: boolean;
 		autoPanDuration?: number;
-		autoPanMargin?: number[][] | number[] | number;
+		autoPanMargin?: ValueBounds<number>;
 		autoPanUseMapMargin?: boolean;
 		closeButton?: boolean;
 		contentLayout?: IClassConstructor<ILayout> | string;
@@ -1874,18 +1878,18 @@ declare namespace ymaps {
 		maxWidth?: number;
 		minHeight?: number;
 		minWidth?: number;
-		offset?: number[];
+		offset?: Coordinate;
 		pane?: string;
 		panelContentLayout?: IClassConstructor<ILayout> | string;
 		panelMaxHeightRatio?: number;
 		panelMaxMapArea?: number;
 		shadow?: boolean;
 		shadowLayout?: IClassConstructor<ILayout> | string;
-		shadowOffset?: number[];
+		shadowOffset?: Coordinate;
 	}
 
 	export class Circle implements GeoObject {
-		constructor(geometry: ICircleGeometry[][][][] | number[][] | object, properties?: object | IDataManager, options?: ICircleOptions)
+		constructor(geometry: ICircleGeometry[][][][] | [Coordinate, number] | object, properties?: object | IDataManager, options?: ICircleOptions)
 
 		balloon: geoObject.Balloon;
 		editor: IGeometryEditor;
@@ -1931,10 +1935,10 @@ declare namespace ymaps {
 		openHintOnHover?: boolean;
 		outline?: boolean;
 		pane?: string;
-		strokeColor?: string[][] | string[] | string;
-		strokeOpacity?: number[][] | number[] | number;
-		strokeStyle?: string[][][] | object[][] | string[] | object[] | string | object;
-		strokeWidth?: number[][] | number[] | number;
+		strokeColor?: ValueBounds<string>;
+		strokeOpacity?: ValueBounds<number>;
+		strokeStyle?: ValueBounds<string | object>;
+		strokeWidth?: ValueBounds<number>;
 		syncOverlayInit?: boolean;
 		useMapMarginInDragging?: boolean;
 		visible?: boolean;
@@ -1967,18 +1971,18 @@ declare namespace ymaps {
 		groupByCoordinates?: boolean;
 		hasBalloon?: boolean;
 		hasHint?: boolean;
-		margin?: number[][] | number[] | number;
-		maxZoom?: number[] | number;
+		margin?: ValueBounds<number>;
+		maxZoom?: ValuePair<number> | number;
 		minClusterSize?: number;
 		preset?: PresetKey;
 		showInAlphabeticalOrder?: boolean;
 		useMapMargin?: boolean;
-		viewportMargin?: number[][] | number[] | number;
-		zoomMargin?: number[][] | number[] | number;
+		viewportMargin?: ValueBounds<number>;
+		zoomMargin?: ValueBounds<number>;
 	}
 
 	export class ClusterPlacemark implements IGeoObject, collection.Item {
-		constructor(geometry: number[] | object | IPointGeometry, properties: IClusterPlacemarkProperties, options?: IClusterPlacemarkOptions);
+		constructor(geometry: Coordinate | object | IPointGeometry, properties: IClusterPlacemarkProperties, options?: IClusterPlacemarkOptions);
 
 		geometry: IGeometry | null;
 		properties: IDataManager;
@@ -2000,7 +2004,7 @@ declare namespace ymaps {
 
 		onRemoveFromMap(oldMap: Map): void;
 
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getGeoObjects(): IGeoObject[];
 	}
@@ -2023,8 +2027,8 @@ declare namespace ymaps {
 		iconLayout?: string | IClassConstructor<ILayout>;
 		icons?: {
 			href: string;
-			size: number[];
-			ooffset: number[];
+			size: ValuePair<number>;
+			offset: ValuePair<number>;
 			shape?: IShape | IGeometryJson;
 		}[];
 		iconShape?: IGeometryJson;
@@ -2078,7 +2082,7 @@ declare namespace ymaps {
 
 		callMethod(name: string): void;
 
-		get(name: string): object;
+		get<T>(name: string): T | null;
 
 		getSourceEvent(): IEvent | null;
 
@@ -2185,13 +2189,13 @@ declare namespace ymaps {
 
 		get(index: number): IGeoObject;
 
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getIterator(): IIterator;
 
 		getLength(): number;
 
-		getPixelBounds(): number[][] | null;
+		getPixelBounds(): CoordinateBounds | null;
 
 		indexOf(object: IGeoObject): number;
 
@@ -2212,11 +2216,11 @@ declare namespace ymaps {
 		events: IEventManager;
 		options: IOptionManager;
 
-		fromClientPixels(clientPixelPoint: number[]): number[];
+		fromClientPixels(clientPixelPoint: Coordinate): Coordinate;
 
 		getZoom(): number;
 
-		toClientPixels(globalPixelPoint: number[]): number[];
+		toClientPixels(globalPixelPoint: Coordinate): Coordinate;
 
 		getParent(): null | IControlParent;
 
@@ -2247,11 +2251,11 @@ declare namespace ymaps {
 
 		destroy(): void;
 
-		getBounds(options?: IMapMarginOptions): number[][];
+		getBounds(options?: IMapMarginOptions): CoordinateBounds;
 
-		getCenter(options?: IMapMarginOptions): number[];
+		getCenter(options?: IMapMarginOptions): Coordinate;
 
-		getGlobalPixelCenter(options?: IMapMarginOptions): number[];
+		getGlobalPixelCenter(options?: IMapMarginOptions): Coordinate;
 
 		getPanoramaManager(): Promise<panorama.Manager>;
 
@@ -2259,13 +2263,13 @@ declare namespace ymaps {
 
 		getZoom(): number;
 
-		panTo(center: number[] | object[], options?: IMapPanOptions): Promise<void>;
+		panTo(center: Coordinate | object[], options?: IMapPanOptions): Promise<void>;
 
-		setBounds(bounds: number[][], options?: IMapBoundsOptions): Promise<void>;
+		setBounds(bounds: CoordinateBounds, options?: IMapBoundsOptions): Promise<void>;
 
-		setCenter(center: number[], zoom?: number, options?: IMapPositionOptions): Promise<void>;
+		setCenter(center: Coordinate, zoom?: number, options?: IMapPositionOptions): Promise<void>;
 
-		setGlobalPixelCenter(globalPixelCenter: number[], zoom?: number, options?: IMapPositionOptions): Promise<void>;
+		setGlobalPixelCenter(globalPixelCenter: Coordinate, zoom?: number, options?: IMapPositionOptions): Promise<void>;
 
 		setType(type: string | MapType, options?: IMapCheckZoomRangeOptions): Promise<void>;
 
@@ -2290,7 +2294,7 @@ declare namespace ymaps {
 
 	interface IMapBoundsOptions extends IMapPositionOptions {
 		preciseZoom?: boolean;
-		zoomMargin?: number[][] | number[];
+		zoomMargin?: ValueBounds<number>;
 	}
 
 	interface IMapPanOptions extends IMapPositionOptions {
@@ -2305,10 +2309,10 @@ declare namespace ymaps {
 
 	interface IMapState {
 		behaviors?: string[];
-		bounds?: number[][];
-		center?: number[];
+		bounds?: CoordinateBounds;
+		center?: Coordinate;
 		controls?: string[];
-		margin?: number[][] | number[];
+		margin?: ValueBounds<number>;
 		type?: "yandex#map" | "yandex#satellite" | "yandex#hybrid";
 		zoom?: number;
 	}
@@ -2332,7 +2336,7 @@ declare namespace ymaps {
 	}
 
 	export class Placemark extends GeoObject {
-		constructor(geometry: number[] | object | IPointGeometry, properties: object | IDataManager, options?: IPlacemarkOptions)
+		constructor(geometry: Coordinate | object | IPointGeometry, properties: object | IDataManager, options?: IPlacemarkOptions)
 	}
 
 	interface IPlacemarkOptions {
@@ -2356,15 +2360,15 @@ declare namespace ymaps {
 
 		getOverlaySync(): IOverlay;
 
-		getPosition(): number[];
+		getPosition(): Coordinate;
 
 		isOpen(): boolean;
 
-		open(position: number[], data: object | string | HTMLElement): Promise<T>;
+		open(position: Coordinate, data: object | string | HTMLElement): Promise<T>;
 
 		setData(data: object | string | HTMLElement): Promise<T>;
 
-		setPosition(position: number[]): Promise<T>;
+		setPosition(position: Coordinate): Promise<T>;
 	}
 
 	interface IPopupOptions {
@@ -2430,7 +2434,7 @@ declare namespace ymaps {
 	}
 
 	export interface IBaseGeometry extends IEventEmitter {
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getType(): string;
 	}
@@ -2462,15 +2466,15 @@ declare namespace ymaps {
 	}
 
 	export interface ICircleGeometryAccess extends IFreezable {
-		contains(position: number[]): boolean;
+		contains(position: Coordinate): boolean;
 
-		getClosest(anchorPosition: number[]): object;
+		getClosest(anchorPosition: Coordinate): object;
 
-		getCoordinates(): number[] | null;
+		getCoordinates(): Coordinate | null;
 
 		getRadius(): number;
 
-		setCoordinates(coordinates: number[] | null): this;
+		setCoordinates(coordinates: Coordinate | null): this;
 
 		setRadius(radius: number): this;
 	}
@@ -2492,18 +2496,18 @@ declare namespace ymaps {
 	}
 
 	export interface ICoordSystem {
-		getDistance(point1: number[], point2: number[]): number;
+		getDistance(point1: Coordinate, point2: Coordinate): number;
 
-		solveDirectProblem(startPoint: number[], direction: number[], distance: number): object;
+		solveDirectProblem(startPoint: Coordinate, direction: number[], distance: number): object;
 
-		solveInverseProblem(startPoint: number[], endPoint: number[], reverseDirection?: boolean): object;
+		solveInverseProblem(startPoint: Coordinate, endPoint: number[], reverseDirection?: boolean): object;
 	}
 
 	export interface ICopyrightsAccessor extends ICopyrightsProvider { //tslint:disable-line no-empty-interface no-empty-interfaces
 	}
 
 	export interface ICopyrightsProvider extends IEventEmitter {
-		getCopyrights(coords: number[], zoom: number): Promise<(string | HTMLElement)[]>;
+		getCopyrights(coords: Coordinate, zoom: number): Promise<(string | HTMLElement)[]>;
 
 		remove(): void;
 
@@ -2526,7 +2530,7 @@ declare namespace ymaps {
 
 		callMethod(name: string): void;
 
-		get(name: string): object;
+		get<T>(name: string): T | null;
 
 		getSourceEvent(): IEvent | null;
 
@@ -2597,9 +2601,9 @@ declare namespace ymaps {
 	}
 
 	export interface IGeocodeProvider {
-		geocode(request: string, options?: { boundedBy?: number[][], results?: number, skip?: number, strictBounds?: boolean }): Promise<object>;
+		geocode(request: string, options?: { boundedBy?: CoordinateBounds, results?: number, skip?: number, strictBounds?: boolean }): Promise<object>;
 
-		suggest(request: string, options?: { boundedBy?: number[][], results?: number, strictBounds?: boolean }): Promise<object>;
+		suggest(request: string, options?: { boundedBy?: CoordinateBounds, results?: number, strictBounds?: boolean }): Promise<object>;
 	}
 
 	export interface IGeometry extends IBaseGeometry, ICustomizable {
@@ -2637,13 +2641,13 @@ declare namespace ymaps {
 
 		get(index: number): IGeoObject;
 
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getIterator(): IIterator;
 
 		getLength(): number;
 
-		getPixelBounds(): number[][] | null;
+		getPixelBounds(): CoordinateBounds | null;
 
 		indexOf(object: IGeoObject): number;
 
@@ -2661,13 +2665,13 @@ declare namespace ymaps {
 
 		get(index: number): IGeoObject;
 
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getIterator(): IIterator;
 
 		getLength(): number;
 
-		getPixelBounds(): number[][] | null;
+		getPixelBounds(): CoordinateBounds | null;
 
 		indexOf(geoObject: IGeoObject): number;
 	}
@@ -2682,9 +2686,9 @@ declare namespace ymaps {
 	export interface ILayer extends IChildOnMap, ICustomizable, IEventEmitter {
 		getBrightness?(): number;
 
-		getCopyrights?(coords: number[], zoom: number): Promise<(string | HTMLElement)[]>;
+		getCopyrights?(coords: Coordinate, zoom: number): Promise<(string | HTMLElement)[]>;
 
-		getZoomRange?(point: number[]): Promise<number[]>;
+		getZoomRange?(point: Coordinate): Promise<ValuePair<number>>;
 	}
 
 	export interface ILayout extends IDomEventEmitter {
@@ -2708,25 +2712,25 @@ declare namespace ymaps {
 	}
 
 	export interface ILineStringGeometryAccess extends IFreezable {
-		get(index: number): number[];
+		get(index: number): Coordinate;
 
 		getChildGeometry(index: number): IPointGeometryAccess;
 
-		getClosest(anchorPosition: number[]): object;
+		getClosest(anchorPosition: Coordinate): object;
 
-		getCoordinates(): number[][];
+		getCoordinates(): Coordinate[];
 
 		getLength(): number;
 
-		insert(index: number, coordinates: number[][]): ILineStringGeometryAccess;
+		insert(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-		remove(index: number): number[];
+		remove(index: number): Coordinate;
 
-		set(index: number, coordinates: number[]): ILineStringGeometryAccess;
+		set(index: number, coordinates: Coordinate): ILineStringGeometryAccess;
 
-		setCoordinates(coordinates: number[]): ILineStringGeometryAccess;
+		setCoordinates(coordinates: Coordinate[]): ILineStringGeometryAccess;
 
-		splice(index: number, length: number): number[][];
+		splice(index: number, length: number): Coordinate[];
 	}
 
 	export interface IMapAction extends IEventEmitter {
@@ -2745,7 +2749,7 @@ declare namespace ymaps {
 
 	export interface IMultiRouteParams {
 		avoidTrafficJams?: boolean;
-		boundedBy?: number[][] | null;
+		boundedBy?: CoordinateBounds | null;
 		requestSendInterval?: string | number;
 		results?: number;
 		reverseGeocoding?: boolean;
@@ -2755,7 +2759,7 @@ declare namespace ymaps {
 		viaIndexes?: number[];
 	}
 
-	export type IMultiRouteReferencePoint = string | number[] | geometry.Point;
+	export type IMultiRouteReferencePoint = string | Coordinate | geometry.Point;
 
 	export interface IOptionManager extends IChild<IOptionManager>, IEventEmitter, IFreezable {
 		get(key: string, defaultValue: object): object;
@@ -2820,11 +2824,11 @@ declare namespace ymaps {
 
 		getName(): string;
 
-		getPosition(): number[];
+		getPosition(): Coordinate;
 
 		getTileLevels(): IPanoramaTileLevel[];
 
-		getTileSize(): number[];
+		getTileSize(): ValuePair<number>;
 	}
 
 	export interface IPanoramaConnection {
@@ -2865,12 +2869,12 @@ declare namespace ymaps {
 
 		getPanorama(): IPanorama;
 
-		getPosition(): number[];
+		getPosition(): Coordinate;
 	}
 
 	export interface IPanoramaMarkerIcon {
 		image: HTMLCanvasElement | HTMLImageElement;
-		offset: number[];
+		offset: ValuePair<number>;
 	}
 
 	export interface IPanoramaMarkerIconSet {
@@ -2881,7 +2885,7 @@ declare namespace ymaps {
 	}
 
 	export interface IPanoramaTileLevel {
-		getImageSize(): number[];
+		getImageSize(): ValuePair<number>;
 
 		getTileUrl(x: number, y: number): string;
 	}
@@ -2891,15 +2895,15 @@ declare namespace ymaps {
 	}
 
 	export interface IPixelCircleGeometry extends IPixelGeometry {
-		getCoordinates(): number[];
+		getCoordinates(): Coordinate;
 
 		getRadius(): number;
 	}
 
 	export interface IPixelLineStringGeometry extends IPixelGeometry {
-		getClosest(anchorPosition: number[]): object;
+		getClosest(anchorPosition: Coordinate): object;
 
-		getCoordinates(): number[][];
+		getCoordinates(): Coordinate[];
 
 		getLength(): number;
 
@@ -2919,9 +2923,9 @@ declare namespace ymaps {
 	}
 
 	export interface IPointGeometryAccess {
-		getCoordinates(): number[] | null;
+		getCoordinates(): Coordinate | null;
 
-		setCoordinates(coordinates: number[] | null): this;
+		setCoordinates(coordinates: Coordinate | null): this;
 	}
 
 	export interface IPopup<T> extends ICustomizable, IEventEmitter {
@@ -2933,15 +2937,15 @@ declare namespace ymaps {
 
 		getOverlaySync(): IOverlay;
 
-		getPosition(): number[];
+		getPosition(): Coordinate;
 
 		isOpen(): boolean;
 
-		open(position: number[], data: object | string | HTMLElement): Promise<T>;
+		open(position: Coordinate, data: object | string | HTMLElement): Promise<T>;
 
 		setData(data: object | string | HTMLElement): Promise<T>;
 
-		setPosition(position: number[]): Promise<T>;
+		setPosition(position: Coordinate): Promise<T>;
 	}
 
 	export interface IPopupManager<T> extends IEventEmitter {
@@ -2957,35 +2961,35 @@ declare namespace ymaps {
 
 		getOverlaySync(): IOverlay | null;
 
-		getPosition(): number[] | null;
+		getPosition(): Coordinate | null;
 
 		isOpen(): boolean;
 
-		open(position?: number[], data?: object | string | HTMLElement, options?: object): Promise<T>;
+		open(position?: Coordinate, data?: object | string | HTMLElement, options?: object): Promise<T>;
 
 		setData(data: object | string | HTMLElement): Promise<T>;
 
 		setOptions(options: object): Promise<T>;
 
-		setPosition(position: number[]): Promise<T>;
+		setPosition(position: Coordinate): Promise<T>;
 	}
 
 	export interface IPositioningContext {
-		fromClientPixels(clientPixelPoint: number[]): number[];
+		fromClientPixels(clientPixelPoint: Coordinate): Coordinate;
 
 		getZoom(): number;
 
-		toClientPixels(globalPixelPoint: number[]): number[];
+		toClientPixels(globalPixelPoint: Coordinate): Coordinate;
 	}
 
 	export interface IProjection {
-		fromGlobalPixels(globalPixelPoint: number[], zoom: number): number[];
+		fromGlobalPixels(globalPixelPoint: Coordinate, zoom: number): Coordinate;
 
 		getCoordSystem(): ICoordSystem;
 
 		isCycled(): boolean[];
 
-		toGlobalPixels(coordPoint: number[], zoom: number): number[];
+		toGlobalPixels(coordPoint: Coordinate, zoom: number): Coordinate;
 	}
 
 	export interface IRoutePanel {
@@ -3018,11 +3022,11 @@ declare namespace ymaps {
 	}
 
 	export interface IShape {
-		contains(position: number[]): boolean;
+		contains(position: Coordinate): boolean;
 
 		equals(shape: IShape): boolean;
 
-		getBounds(): number[][] | null;
+		getBounds(): CoordinateBounds | null;
 
 		getGeometry(): IPixelGeometry;
 
