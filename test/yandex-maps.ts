@@ -1,6 +1,6 @@
-const defaultBehavior = ["drag", "scrollZoom", "dblClickZoom", "multiTouch", "rightMouseButtonMagnifier"];
+const defaultBehavior: string[] = ["drag", "scrollZoom", "dblClickZoom", "multiTouch", "rightMouseButtonMagnifier"];
 const element: HTMLDivElement = document.createElement("div");
-const map = new ymaps.Map(
+const map: ymaps.Map = new ymaps.Map(
 	element,
 	{
 		behaviors: defaultBehavior,
@@ -16,19 +16,20 @@ const map = new ymaps.Map(
 map.behaviors.disable(defaultBehavior);
 
 map.events.add("click", () => {
+	//
 });
 
-const balloonLayout = ymaps.templateLayoutFactory.createClass(
-	"<div class=\"map-marker-balloon\"></div>",
+const balloonLayout: any = ymaps.templateLayoutFactory.createClass(
+	`<div class="map-marker-balloon"></div>`,
 	{
 		build(this: ymaps.ILayout): void {
-			(<ymaps.layout.templateBased.Base> (<any> this.constructor).superclass).build.call(this);
-			this.getParentElement().children.item(0).children.item(0).appendChild((<any> this.getData()).properties.get("balloonContent"));
+			(<ymaps.layout.templateBased.Base> (<any> this.constructor).superclass).build.call(this); //tslint:disable-line no-invalid-this
+			this.getParentElement().children.item(0).children.item(0).appendChild((<any> this.getData()).properties.get("balloonContent")); //tslint:disable-line no-invalid-this
 		}
 	}
 );
 
-const mapMarker = new ymaps.Placemark(
+const mapMarker: ymaps.GeoObject = new ymaps.Placemark(
 	[55.76, 37.64],
 	{
 		balloonContent:         "test",
@@ -48,6 +49,7 @@ const mapMarker = new ymaps.Placemark(
 );
 
 mapMarker.events.add("click", (event: ymaps.Event) => {
+	//
 });
 
 map.geoObjects.add(mapMarker);

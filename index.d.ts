@@ -764,6 +764,30 @@ declare namespace ymaps {
 			}
 		}
 
+		export namespace pixel {
+			export class Rectangle implements IPixelRectangleGeometry {
+				constructor(coordinates?: Coordinate[], metadata?: object);
+
+				events: IEventManager;
+
+				getClosest(anchorPosition: object): object;
+
+				getCoordinates(): [Coordinate, Coordinate];
+
+				equals(geometry: IPixelGeometry): boolean;
+
+				getMetaData(): object;
+
+				scale(factor: number): IPixelGeometry;
+
+				shift(offset: number[]): IPixelGeometry;
+
+				getBounds(): CoordinateBounds | null;
+
+				getType(): string;
+			}
+		}
+
 		export class LineString implements ILineStringGeometry {
 			constructor(coordinates?: Coordinate[], options?: {
 				coordRendering?: "shortestPath" | "straightPath";
@@ -848,6 +872,31 @@ declare namespace ymaps {
 			getCoordinates(): Coordinate | null;
 
 			setCoordinates(coordinates: Coordinate | null): this;
+		}
+	}
+
+	export namespace geometryEditor {
+		export class Point implements IGeometryEditor {
+			constructor(geomety: IPointGeometry, options?: IGeometryEditorPointOptions)
+
+			options: IOptionManager;
+			events: IEventManager;
+			geometry: IGeometry;
+			state: IDataManager;
+
+			startEditing(): void;
+
+			stopEditing(): void;
+
+			startDrawing(): Promise<void>;
+
+			stopDrawing(): Promise<void>;
+		}
+
+		interface IGeometryEditorPointOptions {
+			dblClickHandler?: (model: any) => any;
+			drawingCursor?: string;
+			drawOver?: boolean;
 		}
 	}
 
@@ -960,6 +1009,8 @@ declare namespace ymaps {
 
 				getData(): object;
 
+				getElement(): HTMLElement;
+
 				getParentElement(): HTMLElement;
 
 				getShape(): IShape | null;
@@ -979,6 +1030,7 @@ declare namespace ymaps {
 				rebuild(): void;
 			}
 		}
+		export const storage: util.AsyncStorage;
 	}
 
 	export namespace map {
@@ -1698,7 +1750,7 @@ declare namespace ymaps {
 
 			resolve(key: string, name?: string): object;
 
-			set(key: object | string, value?: object): this;
+			set(key: object | string, value?: any): this;
 
 			unset(keys: string[][] | string[] | string): this;
 
@@ -2333,10 +2385,33 @@ declare namespace ymaps {
 		suppressObsoleteBrowserNotifier?: boolean;
 		yandexMapAutoSwitch?: boolean;
 		yandexMapDisablePoiInteractivity?: boolean;
+
+		[index: string]: any;
+	}
+
+	export class Monitor {
+		constructor(dataManager: IDataManager | IOptionManager);
+
+		add(name: string | string[], changeCallback?: (newValues: { [index: string]: any; }, prevValues: { [index: string]: any; }) => void, context?: any, params?: {
+			compareCallback?: () => void | { [index: string]: () => void };
+			defaultValue?: any;
+			resolveCallback?: () => void | { [index: string]: () => void }
+		}): this;
+
+		forceChange(): this;
+
+		get(name: string): any;
+
+		remove(name: string | string[]): this;
+
+		removeAll(): this;
 	}
 
 	export class Placemark extends GeoObject {
 		constructor(geometry: Coordinate | object | IPointGeometry, properties: object | IDataManager, options?: IPlacemarkOptions)
+
+		geometry: geometry.Point;
+		editor: geometryEditor.Point;
 	}
 
 	interface IPlacemarkOptions {
@@ -2392,10 +2467,20 @@ declare namespace ymaps {
 	}
 
 	export namespace templateLayoutFactory {
-		export function createClass(template: string, overrides?: object, staticMethods?: object): IClassConstructor<layout.templateBased.Base>;
+		export function createClass(template: string, overrides?: object, staticMethods?: {
+			[index: string]: (this: layout.templateBased.Base) => any;
+		}): IClassConstructor<layout.templateBased.Base>;
 	}
 
 	export namespace util {
+		export class AsyncStorage extends Storage {
+			define(key: string, depends?: string[], resolveCallback?: (provide: (value: any) => void) => void, context?: any): this;
+
+			isDefined(key: string): boolean;
+
+			require(keys: string | string[], successCallback?: (values: any) => void, errorCallback?: (error: any) => void, context?: any): Promise<any>;
+		}
+
 		export namespace cursor {
 			export class Accessor {
 				constructor(key: string);
@@ -2697,6 +2782,8 @@ declare namespace ymaps {
 
 		getData(): object;
 
+		getElement(): HTMLElement;
+
 		getParentElement(): HTMLElement;
 
 		getShape(): IShape | null;
@@ -2917,6 +3004,12 @@ declare namespace ymaps {
 		scale(factor: number): IPixelGeometry;
 
 		shift(offset: number[]): IPixelGeometry;
+	}
+
+	export interface IPixelRectangleGeometry extends IPixelGeometry {
+		getClosest(anchorPosition: object): object;
+
+		getCoordinates(): [Coordinate, Coordinate];
 	}
 
 	export interface IPointGeometry extends IGeometry, IPointGeometryAccess { //tslint:disable-line no-empty-interface no-empty-interfaces
